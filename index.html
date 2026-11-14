@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muffin Magic</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23843a5a'/%3E%3Cpath d='M10 30 Q10 10 32 10 Q54 10 54 30 Z' fill='%23d9a066'/%3E%3Cpath d='M8 30 H56 Q56 34 52 34 H12 Q8 34 8 30 Z' fill='%23c98b4f'/%3E%3Cpath d='M14 34 H50 L45 58 H19 Z' fill='%23f4b6c8'/%3E%3Cpath d='M22 34 L25 58 M32 34 V58 M42 34 L39 58' stroke='%23e58fa3' stroke-width='2'/%3E%3Ccircle cx='24' cy='20' r='2' fill='%23fff7ef'/%3E%3Ccircle cx='34' cy='16' r='2' fill='%23fff7ef'/%3E%3Ccircle cx='42' cy='22' r='2' fill='%23fff7ef'/%3E%3C/svg%3E">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background: #fdf1f4;
+            color: #6e2f4c;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        header {
+            background: #843a5a;
+            color: #fdf1f4;
+            padding: 14px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .brand h1 {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .cart-btn {
+            background: #f4b6c8;
+            color: #6e2f4c;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .cart-btn:hover {
+            background: #eea3b8;
+        }
+
+        /* Hero */
+        .hero {
+            background: #f4b6c8 url('https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=1600') center/cover no-repeat;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(132, 58, 90, 0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            color: #fff;
+            padding: 30px 20px;
+        }
+
+        .hero h2 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .hero h3 {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .hero .tags {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .hero .tagline {
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: #f4b6c8;
+            color: #6e2f4c;
+            padding: 12px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero-btn:hover {
+            background: #eea3b8;
+        }
+
+        /* Menu */
+        .section-title {
+            text-align: center;
+            margin: 44px 0 8px;
+            font-size: 2rem;
+            color: #843a5a;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: #a85a7b;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 26px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 5% 50px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(132, 58, 90, 0.12);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .img-wrap {
+            position: relative;
+            height: 200px;
+            background: #fbe3ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-wrap .fallback {
+            font-size: 4rem;
+            position: absolute;
+        }
+
+        .img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .card-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.25rem;
+            color: #6e2f4c;
+        }
+
+        .card-body .desc {
+            font-size: 0.92rem;
+            color: #8a5a72;
+            margin: 6px 0 16px;
+            flex: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #a8285c;
+        }
+
+        .add-btn {
+            background: #843a5a;
+            color: #fdf1f4;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .add-btn:hover {
+            background: #9c4a6c;
+        }
+
+        /* Delivery / policy info */
+        .info {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 5% 50px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .info-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 6px 18px rgba(132, 58, 90, 0.1);
+        }
+
+        .info-card h3 {
+            color: #843a5a;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            position: relative;
+            padding: 7px 0 7px 22px;
+            font-size: 0.93rem;
+            border-bottom: 1px dashed #f0d3dc;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .info-card li::before {
+            content: "♥";
+            position: absolute;
+            left: 0;
+            color: #e58fa3;
+        }
+
+        /* Cart drawer */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 20;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(380px, 100%);
+            height: 100%;
+            background: #fdf1f4;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -6px 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+
+        .cart-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px dashed #d9a9ba;
+        }
+
+        .cart-head h2 {
+            font-size: 1.4rem;
+            color: #843a5a;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.7rem;
+            cursor: pointer;
+            color: #843a5a;
+            line-height: 1;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f2d6df;
+        }
+
+        .ci-emoji {
+            font-size: 1.8rem;
+        }
+
+        .ci-info {
+            flex: 1;
+        }
+
+        .ci-name {
+            font-weight: bold;
+        }
+
+        .ci-price {
+            font-size: 0.9rem;
+            color: #8a5a72;
+        }
+
+        .qty {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qty button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            background: #f4b6c8;
+            color: #6e2f4c;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .remove {
+            background: none;
+            border: none;
+            color: #b00020;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+            margin-left: 4px;
+        }
+
+        .cart-foot {
+            padding: 20px;
+            border-top: 1px dashed #d9a9ba;
+        }
+
+        .sum-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        .free-note {
+            font-size: 0.85rem;
+            color: #a85a7b;
+            font-style: italic;
+            min-height: 1.2em;
+            margin: 4px 0 10px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 14px;
+            background: #843a5a;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .empty {
+            text-align: center;
+            color: #a85a7b;
+            margin-top: 40px;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            background: #843a5a;
+            color: #f4b6c8;
+            text-align: center;
+            padding: 22px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="#top" class="brand">
+            <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M10 30 Q10 10 32 10 Q54 10 54 30 Z" fill="#d9a066" />
+                <path d="M8 30 H56 Q56 34 52 34 H12 Q8 34 8 30 Z" fill="#c98b4f" />
+                <path d="M14 34 H50 L45 58 H19 Z" fill="#f4b6c8" />
+                <path d="M22 34 L25 58 M32 34 V58 M42 34 L39 58" stroke="#e58fa3" stroke-width="2" />
+                <circle cx="24" cy="20" r="2" fill="#fff7ef" />
+                <circle cx="34" cy="16" r="2" fill="#fff7ef" />
+                <circle cx="42" cy="22" r="2" fill="#fff7ef" />
+            </svg>
+            <h1>MUFFIN MAGIC</h1>
+        </a>
+        <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+    </header>
+
+    <section class="hero" id="top">
+        <div class="hero-content">
+            <h2>MUFFIN MAGIC</h2>
+            <h3>Freshly Baked Happiness!</h3>
+            <p class="tags">Delicious • Soft • Fresh • Homemade</p>
+            <p class="tagline">A little muffin, a lot of happiness!</p>
+            <a href="#menu" class="hero-btn">Shop Now</a>
+        </div>
+    </section>
+
+    <h2 class="section-title" id="menu">Our Muffins</h2>
+    <p class="section-sub">Pick your favourite and add it to your cart</p>
+    <div class="grid" id="productGrid"></div>
+
+    <section class="info" id="info">
+        <h2 class="section-title">Delivery, Returns & Payment</h2>
+        <p class="section-sub">Everything you need to know before you order</p>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🚚 Delivery Details</h3>
+                <ul>
+                    <li>Home delivery available in selected areas.</li>
+                    <li>Fresh muffins prepared after receiving orders.</li>
+                    <li>Delivery time: 1–2 working days.</li>
+                    <li>Delivery charges: ₹40 per order.</li>
+                    <li>Free delivery on orders above ₹499.</li>
+                    <li>Special bulk and party orders accepted with advance notice.</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>↩️ Return & Refund Policy</h3>
+                <ul>
+                    <li>Since muffins are perishable, returns are generally not accepted.</li>
+                    <li>If the product arrives damaged, contact us within 2 hours of delivery.</li>
+                    <li>A replacement or refund is provided for verified damaged or incorrect orders.</li>
+                    <li>Share photographs as proof of the issue.</li>
+                    <li>Order cancellations are accepted before preparation begins.</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>💳 Payment Options</h3>
+                <ul>
+                    <li>UPI</li>
+                    <li>Google Pay</li>
+                    <li>PhonePe</li>
+                    <li>Cash on Delivery (selected areas)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        © Muffin Magic · A little muffin, a lot of happiness!
+    </footer>
+
+    <div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-head">
+            <h2>Your Cart</h2>
+            <button class="close-btn" onclick="closeCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-foot">
+            <div class="sum-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">₹0</span>
+            </div>
+            <div class="sum-row">
+                <span>Delivery</span>
+                <span id="cartDelivery">₹0</span>
+            </div>
+            <p class="free-note" id="freeNote"></p>
+            <div class="total-row">
+                <span>Total</span>
+                <span id="cartTotal">₹0</span>
+            </div>
+            <button class="buy-btn" type="button">Buy Now</button>
+        </div>
+    </aside>
+
+    <script>
+        const products = [
+            {
+                id: 'vanilla',
+                name: 'Vanilla Muffin',
+                price: 50,
+                emoji: '🧁',
+                img: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=600',
+                desc: 'Classic soft vanilla sponge with a golden, slightly crisp top.'
+            },
+            {
+                id: 'cheesecake',
+                name: 'Cheesecake Muffin',
+                price: 80,
+                emoji: '🍰',
+                img: 'https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600',
+                desc: 'A creamy cheesecake center with a buttery biscuit crumb.'
+            },
+            {
+                id: 'choco',
+                name: 'Choco Truffle Muffin',
+                price: 80,
+                emoji: '🍫',
+                img: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600',
+                desc: 'Rich dark chocolate batter with a melting truffle center.'
+            },
+            {
+                id: 'strawberry',
+                name: 'Strawberry Muffin',
+                price: 50,
+                emoji: '🍓',
+                img: 'https://images.unsplash.com/photo-1519869325930-281384150729?w=600',
+                desc: 'Fresh strawberry pieces baked into a soft, fruity pink crumb.'
+            }
+        ];
+
+        const DELIVERY_CHARGE = 40;
+        const FREE_DELIVERY_ABOVE = 499;
+
+        let cart = {}; // { productId: quantity }
+
+        const grid = document.getElementById('productGrid');
+        const cartItems = document.getElementById('cartItems');
+        const cartSubtotal = document.getElementById('cartSubtotal');
+        const cartDelivery = document.getElementById('cartDelivery');
+        const cartTotal = document.getElementById('cartTotal');
+        const freeNote = document.getElementById('freeNote');
+        const cartCount = document.getElementById('cartCount');
+        const drawer = document.getElementById('cartDrawer');
+        const overlay = document.getElementById('overlay');
+
+        function formatPrice(n) {
+            return '₹' + n;
+        }
+
+        function renderProducts() {
+            grid.innerHTML = products.map(p => `
+        <div class="card">
+          <div class="img-wrap">
+            <span class="fallback">${p.emoji}</span>
+            <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">
+          </div>
+          <div class="card-body">
+            <h3>${p.name}</h3>
+            <p class="desc">${p.desc}</p>
+            <div class="card-footer">
+              <span class="price">${formatPrice(p.price)}</span>
+              <button class="add-btn" onclick="addToCart('${p.id}')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        function renderCart() {
+            const ids = Object.keys(cart);
+
+            if (ids.length === 0) {
+                cartItems.innerHTML = '<p class="empty">Your cart is empty. Pick a muffin to get started!</p>';
+            } else {
+                cartItems.innerHTML = ids.map(id => {
+                    const p = products.find(x => x.id === id);
+                    const q = cart[id];
+                    return `
+            <div class="cart-item">
+              <span class="ci-emoji">${p.emoji}</span>
+              <div class="ci-info">
+                <div class="ci-name">${p.name}</div>
+                <div class="ci-price">${formatPrice(p.price)} each</div>
+              </div>
+              <div class="qty">
+                <button onclick="changeQty('${id}', -1)">−</button>
+                <span>${q}</span>
+                <button onclick="changeQty('${id}', 1)">+</button>
+              </div>
+              <button class="remove" onclick="removeItem('${id}')">Remove</button>
+            </div>
+          `;
+                }).join('');
+            }
+
+            const subtotal = ids.reduce((sum, id) => {
+                const p = products.find(x => x.id === id);
+                return sum + p.price * cart[id];
+            }, 0);
+            const count = ids.reduce((sum, id) => sum + cart[id], 0);
+
+            let delivery = 0;
+            if (subtotal > 0 && subtotal <= FREE_DELIVERY_ABOVE) {
+                delivery = DELIVERY_CHARGE;
+            }
+
+            cartSubtotal.textContent = formatPrice(subtotal);
+            cartDelivery.textContent = subtotal === 0 ? '₹0' : (delivery === 0 ? 'Free' : formatPrice(delivery));
+            cartTotal.textContent = formatPrice(subtotal + delivery);
+            freeNote.textContent = (subtotal > 0 && delivery > 0)
+                ? `Add ${formatPrice(FREE_DELIVERY_ABOVE + 1 - subtotal)} more for free delivery`
+                : '';
+            cartCount.textContent = count;
+        }
+
+        function addToCart(id) {
+            cart[id] = (cart[id] || 0) + 1;
+            renderCart();
+        }
+
+        function changeQty(id, delta) {
+            cart[id] = (cart[id] || 0) + delta;
+            if (cart[id] <= 0) delete cart[id];
+            renderCart();
+        }
+
+        function removeItem(id) {
+            delete cart[id];
+            renderCart();
+        }
+
+        function openCart() {
+            drawer.classList.add('open');
+            overlay.classList.add('show');
+        }
+
+        function closeCart() {
+            drawer.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        renderProducts();
+        renderCart();
+    </script>
+
+</body>
+
+</html>
